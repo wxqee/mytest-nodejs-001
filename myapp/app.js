@@ -8,6 +8,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var fs = require('fs');
 
 var app = express();
 
@@ -33,6 +34,16 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/cases/:name', function(req, res) {
+  fs.readFile('data/cases/' + req.params.name + '.json', 'utf8', function(err, data) {
+    if (err) {
+      console.error(err.message);
+    }
+    else {
+      res.send(data);
+    }
+  }); 
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
